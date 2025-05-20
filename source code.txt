@@ -1,0 +1,77 @@
+class Inventory:
+    def __init__(self):
+        self.items = {}
+
+    def add_item(self, item, quantity):
+        if quantity < 0:
+            return "Quantity must be a positive number."
+        if item in self.items:
+            self.items[item] += quantity
+        else:
+            self.items[item] = quantity
+
+    def remove_item(self, item, quantity):
+        if quantity < 0:
+            return "Quantity must be a positive number."
+        if item in self.items and self.items[item] >= quantity:
+            self.items[item] -= quantity
+            return f"{quantity} {item}(s) removed from inventory."
+        elif item in self.items:
+            return f"Not enough stock for {item}."
+        else:
+            return f"{item} does not exist in inventory."
+
+    def check_inventory(self):
+        return self.items
+
+    def __str__(self):
+        return "\n".join([f"{item}: {quantity}" for item, quantity in self.items.items()])
+
+
+class Order:
+    def __init__(self, item, quantity):
+        self.item = item
+        self.quantity = quantity
+
+class SupplyChain:
+    def __init__(self):
+        self.inventory = Inventory()
+
+    def process_order(self, order):
+        if order.item in self.inventory.items and self.inventory.items[order.item] >= order.quantity:
+            self.inventory.remove_item(order.item, order.quantity)
+            return f"Order for {order.quantity} {order.item}(s) processed successfully."
+        else:
+            return f"Insufficient stock for {order.item}."
+
+
+# Example Usage
+inventory = Inventory()
+inventory.add_item("Laptop", 50)
+inventory.add_item("Smartphone", 30)
+
+# Create an order for items
+order1 = Order("Laptop", 20)
+order2 = Order("Smartphone", 40)
+
+# Create supply chain and process orders
+supply_chain = SupplyChain()
+
+print("Current Inventory: ")
+print(inventory)
+
+print(supply_chain.process_order(order1))  # Successfully processed
+print(supply_chain.process_order(order2))  # Insufficient stock
+
+print("Updated Inventory: ")
+print(inventory)
+
+
+Current Inventory: 
+Laptop: 50
+Smartphone: 30
+Insufficient stock for Laptop.
+Insufficient stock for Smartphone.
+Updated Inventory: 
+Laptop: 50
+Smartphone: 30
